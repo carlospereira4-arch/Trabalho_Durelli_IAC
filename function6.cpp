@@ -1,9 +1,29 @@
 #include <iostream>
 #include <string>
 #include <cmath>
-#include <algorithm>
 
 using namespace std;
+
+// Função para reverter uma string sem usar biblioteca
+void reverterString(string &str) {
+    int inicio = 0, fim = str.length() - 1;
+    while (inicio < fim) {
+        char temp = str[inicio];
+        str[inicio] = str[fim];
+        str[fim] = temp;
+        inicio++;
+        fim--;
+    }
+}
+
+// Função para substituir caracteres sem usar biblioteca
+void substituirChar(string &str, char antigo, char novo) {
+    for (int i = 0; i < str.length(); i++) {
+        if (str[i] == antigo) {
+            str[i] = novo;
+        }
+    }
+}
 
 string converterFracionario(double parteFracionaria, int base) {
     if (parteFracionaria == 0) return "";
@@ -41,7 +61,7 @@ string converterBinario(double valor) {
             resultado += (parteInteira % 2 + '0');
             parteInteira /= 2;
         }
-        reverse(resultado.begin(), resultado.end());
+        reverterString(resultado);
     }
     return resultado + converterFracionario(parteFrac, 2);
 }
@@ -59,7 +79,7 @@ string converterOctal(double valor) {
             resultado += (parteInteira % 8 + '0');
             parteInteira /= 8;
         }
-        reverse(resultado.begin(), resultado.end());
+        reverterString(resultado);
     }
     return resultado + converterFracionario(parteFrac, 8);
 }
@@ -79,14 +99,14 @@ string converterHexadecimal(double valor) {
             else resultado += (resto - 10 + 'A');
             parteInteira /= 16;
         }
-        reverse(resultado.begin(), resultado.end());
+        reverterString(resultado);
     }
     return resultado + converterFracionario(parteFrac, 16);
 }
 
 
 double converterQualquerParaDecimal(string valor, int base) {
-    replace(valor.begin(), valor.end(), ',', '.');
+    substituirChar(valor, ',', '.');
     
     size_t pontoPos = valor.find('.');
     string inteira = (pontoPos == string::npos) ? valor : valor.substr(0, pontoPos);
@@ -122,7 +142,7 @@ string ajustarBits(string binario, int grupo) {
 }
 
 string binarioParaOctal(string bin) {
-    replace(bin.begin(), bin.end(), ',', '.');
+    substituirChar(bin, ',', '.');
     size_t pontoPos = bin.find('.');
     string inteira = (pontoPos == string::npos) ? bin : bin.substr(0, pontoPos);
     string frac = (pontoPos == string::npos) ? "" : bin.substr(pontoPos + 1);
@@ -146,7 +166,7 @@ string binarioParaOctal(string bin) {
 }
 
 string binarioParaHexa(string bin) {
-    replace(bin.begin(), bin.end(), ',', '.');
+    substituirChar(bin, ',', '.');
     size_t pontoPos = bin.find('.');
     string inteira = (pontoPos == string::npos) ? bin : bin.substr(0, pontoPos);
     string frac = (pontoPos == string::npos) ? "" : bin.substr(pontoPos + 1);
@@ -171,7 +191,7 @@ string binarioParaHexa(string bin) {
 }
 
 string octalParaBinario(string oct) {
-    replace(oct.begin(), oct.end(), ',', '.');
+    substituirChar(oct, ',', '.');
     string res = "";
     string tab[] = {"000", "001", "010", "011", "100", "101", "110", "111"};
     for (char c : oct) {
@@ -213,7 +233,7 @@ int main() {
         string entrada;
         int base;
         cout << "Valor decimal: "; cin >> entrada;
-        replace(entrada.begin(), entrada.end(), ',', '.');
+        substituirChar(entrada, ',', '.');
         double valor = stod(entrada);
         cout << "Base destino (2, 8, 16): "; cin >> base;
         if (base == 2) cout << "Binario: " << converterBinario(valor) << endl;

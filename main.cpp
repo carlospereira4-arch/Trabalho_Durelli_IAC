@@ -4,31 +4,85 @@
 
 using namespace std;
 
-int biDecimal(const string& valorInicial) {
-    int valor = stoi(valorInicial);
-    int tamanho;
+string decOct(int valor){
+   if(valor == 0) return "0";
+   int octal[32];
+   int i = 0;
+   string resultado = "";
 
-    if (valor == 0) {
-        tamanho = 1;
-    } else {
-        int valorPositivo = abs(valor);
-        int log = log10(valorPositivo);
-        tamanho = log + 1;
+        while(valor > 0){
+    octal[i] = valor % 8;
+    valor = valor / 8;
+    i++;
+        }
+  for(int j = i - 1; j >= 0; j--){
+    resultado += (octal[j] + '0');
+  }
+  return resultado;
+}
+
+string decBin(int valor){
+   if(valor == 0) return "0";
+   int binario[32];
+   int i = 0;
+   string resultado = "";
+
+        while(valor > 0){
+    binario[i] = valor % 2;
+    valor = valor / 2;
+    i++;
+        }
+  for(int j = i - 1; j >= 0; j--){
+    resultado += (binario[j] + '0');
+  }
+  return resultado;
+}
+
+string decHex(int valor){
+   if(valor == 0) return "0";
+   char hexa[32];
+   int i = 0;
+   string resultado = "";
+
+        while (valor > 0) {
+            int resto = valor % 16;
+
+            if (resto < 10) {
+                hexa[i] = resto + '0';
+            } else {
+                hexa[i] = (resto - 10) + 'A';
+            }
+
+            valor = valor / 16;
+            i++;
+        }
+
+        for (int j = i - 1; j >= 0; j--) {
+            resultado += hexa[j];
+            if (j > 0) resultado += " ";
+        }
+        return resultado;
     }
 
-    int* valorIn = new int[tamanho];
-    for (int j = 0; j < tamanho; j++) {
-        valorIn[j] = valor % 10;
-        valor /= 10;
-    }
-
+int binDecimal(const string& bin) {
     int decimal = 0;
-    for (int i = 0; i < tamanho; i++) {
-        decimal += valorIn[i] * pow(2, i);
+    for (char bit : bin) {
+        decimal = (decimal * 2) + (bit - '0');
     }
-
-    delete[] valorIn;
     return decimal;
+}
+
+string binHexa(string binario) {
+    string hexadecimal;
+    while (binario.length() % 4 != 0) {
+        binario = "0" + binario;
+    }
+    for (size_t i = 0; i < binario.length(); i += 4) {
+        string grupoDeQuatro = binario.substr(i, 4);
+        int valorDecimal = binDecimal(grupoDeQuatro);
+        hexadecimal += TABELA_HEXA[valorDecimal];
+    }
+    return hexadecimal;
 }
 
 int octDecimal(const string& valorInicial) {
@@ -97,15 +151,9 @@ const string TABELA_OCTAL_BIN[] = {
 };
 const string TABELA_HEXA = "0123456789ABCDEF";
 
-int binarioParaDecimal(const string& bin) {
-    int decimal = 0;
-    for (char bit : bin) {
-        decimal = (decimal * 2) + (bit - '0');
-    }
-    return decimal;
-}
 
-string octalParaBinario(const string& octal) {
+
+string octBin(const string& octal) {
     string binario;
     for (char d : octal) {
         int indice = d - '0';
@@ -117,18 +165,7 @@ string octalParaBinario(const string& octal) {
     return binario;
 }
 
-string binarioParaHexadecimal(string binario) {
-    string hexadecimal;
-    while (binario.length() % 4 != 0) {
-        binario = "0" + binario;
-    }
-    for (size_t i = 0; i < binario.length(); i += 4) {
-        string grupoDeQuatro = binario.substr(i, 4);
-        int valorDecimal = binarioParaDecimal(grupoDeQuatro);
-        hexadecimal += TABELA_HEXA[valorDecimal];
-    }
-    return hexadecimal;
-}
+
 
 int main() {
     cout << "Escolha a operacao:\n";
@@ -154,7 +191,7 @@ int main() {
 
         int resultado = 0;
         if (option == 1) {
-            resultado = biDecimal(valorInicial);
+            resultado = binDecimal(valorInicial);
         } else if (option == 2) {
             resultado = octDecimal(valorInicial);
         } else if (option == 3) {
@@ -170,13 +207,13 @@ int main() {
         cout << "Digite um numero na base 8 (Octal): ";
         cin >> octal;
 
-        string binario = octalParaBinario(octal);
+        string binario = octBin(octal);
         if (binario.empty()) {
             cout << "Octal invalido." << endl;
             return 1;
         }
 
-        string hexadecimal = binarioParaHexadecimal(binario);
+        string hexadecimal = binHexa(binario);
 
         cout << "-> Em binario: " << binario << endl;
         cout << "-> Em hexadecimal: " << hexadecimal << endl;
