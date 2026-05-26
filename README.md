@@ -189,36 +189,49 @@ Para informações técnicas detalhadas, consulte:
 Este projeto é fornecido como trabalho acadêmico.
 
 ---
-ID,Função,Entrada,Saída Esperada,Tipo de Teste
-01,F1 (Dec → Bin),0,"""0""",Limite Zero
-02,F1 (Dec → Oct),255,"""377""",Valor Médio
-03,F1 (Dec → Hex),4095,"""FFF""",Valor Limite Hex
-04,F2 (Bin → Dec),"""1010""",10,Conversão Simples
-05,F2 (Hex → Dec),"""1A3""",419,Alfanumérico
-06,F3 (Bin → Oct),"""111111""","""77""",Agrupamento (3 em 3)
-07,F3 (Bin → Hex),"""10110""","""16""",Padding Automático
-08,F4 (Oct → Hex),"""777""","""1FF""",Ponte Binária
-09,F5 (Validar),"""102"", Base 2",false,Caractere Inválido
-10,F5 (Validar),"""G1"", Base 16",false,Fora do Intervalo A-F
-11,F6 (Frac → Bin),0.5,"""0.1""",Fração Exata
-12,F6 (Frac → Bin),0.1,"""0.0001100...""",Dízima (Truncado)
-13,F6 (Hex.F → Dec),"""1.A""",1.625,Fracionário Complexo
-14,F7 (Trace),13 (Dec → Bin),Tabela completa,Visual/Didático
-15,F8 (Batch),Linha vazia,Pular linha,Robustez
-16,F8 (Batch),"""ABC;10;2""",ERRO (Linha inválida),Tratamento Exceção
-17,F9 (Quiz),Nível 1,Números até 15,Dificuldade
-18,F9 (Quiz),"""ff"" (Entrada)",CORRETO (Case Insensitive),UX/Normalização
-19,F10 (Max),8 bits,"255 (FF, 377, 11111111)",Limite de Arquitetura
-20,F10 (Max),16 bits,65535,Limite Inteiro Curto
-21,Util (Reverter),"""ABC""","""CBA""",Manipulação Memória
-22,Util (Ajustar),"""1"", Tamanho 4","""0001""",Padding de Bits
-23,F1 (Dec → Bin),1024,"""10000000000""",Potência de 2
-24,F2 (Oct → Dec),"""007""",7,Zeros à Esquerda
-25,F5 (Validar),""""", Base 10",false,String Vazia
-26,F6 (Dec → Oct),0.125,"""0.1""",Fração Octal
-27,F8 (Batch),Arquivo inexistente,Mensagem de Erro,File Handling
-28,F9 (Quiz),"Semente ""XPTO""",Perguntas novas,Aleatoriedade
-29,F1 (Dec → Hex),10,"""A""",Conversão de Letra
-30,F10 (Max),32 bits,4294967295,Limite Unsigned Int
+# Suíte de Testes - Conversor de Bases Otimizado
+
+Este documento contém 30 casos de teste estruturados para validar todas as funcionalidades (F1 a F10) do sistema, cobrindo casos nominais, limites e tratamento de erros.
+
+## Tabela de Casos de Teste
+
+| ID | Função | Entrada | Saída Esperada | Tipo de Teste |
+|:---|:---|:---|:---|:---|
+| 01 | **F1** (Dec → Bin) | 0 | "0" | Limite Zero |
+| 02 | **F1** (Dec → Oct) | 255 | "377" | Valor Médio |
+| 03 | **F1** (Dec → Hex) | 4095 | "FFF" | Valor Limite Hex |
+| 04 | **F2** (Bin → Dec) | "1010" | 10 | Conversão Simples |
+| 05 | **F2** (Hex → Dec) | "1A3" | 419 | Alfanumérico |
+| 06 | **F3** (Bin → Oct) | "111111" | "77" | Agrupamento (3 em 3) |
+| 07 | **F3** (Bin → Hex) | "10110" | "16" | Padding Automático |
+| 08 | **F4** (Oct → Hex) | "777" | "1FF" | Ponte Binária |
+| 09 | **F5** (Validar) | "102", Base 2 | `false` | Caractere Inválido |
+| 10 | **F5** (Validar) | "G1", Base 16 | `false` | Fora do Intervalo A-F |
+| 11 | **F6** (Frac → Bin) | 0.5 | "0.1" | Fração Exata |
+| 12 | **F6** (Frac → Bin) | 0.1 | "0.0001100..." | Dízima (Truncado) |
+| 13 | **F6** (Hex.F → Dec) | "1.A" | 1.625 | Fracionário Complexo |
+| 14 | **F7** (Trace) | 13 (Dec → Bin) | Tabela completa | Visual/Didático |
+| 15 | **F8** (Batch) | Linha vazia | Pular linha | Robustez |
+| 16 | **F8** (Batch) | "ABC;10;2" | ERRO (Linha inválida) | Tratamento Exceção |
+| 17 | **F9** (Quiz) | Nível 1 | Números até 15 | Dificuldade |
+| 18 | **F9** (Quiz) | "ff" (Entrada) | CORRETO (Case Insensitive) | UX/Normalização |
+| 19 | **F10** (Max) | 8 bits | 255 (FF, 377, 11111111) | Limite de Arquitetura |
+| 20 | **F10** (Max) | 16 bits | 65535 | Limite Inteiro Curto |
+| 21 | **Util** (Reverter) | "ABC" | "CBA" | Manipulação Memória |
+| 22 | **Util** (Ajustar) | "1", Tamanho 4 | "0001" | Padding de Bits |
+| 23 | **F1** (Dec → Bin) | 1024 | "10000000000" | Potência de 2 |
+| 24 | **F2** (Oct → Dec) | "007" | 7 | Zeros à Esquerda |
+| 25 | **F5** (Validar) | "", Base 10 | `false` | String Vazia |
+| 26 | **F6** (Dec → Oct) | 0.125 | "0.1" | Fração Octal |
+| 27 | **F8** (Batch) | Arquivo inexistente | Mensagem de Erro | File Handling |
+| 28 | **F9** (Quiz) | Semente "XPTO" | Perguntas novas | Aleatoriedade |
+| 29 | **F1** (Dec → Hex) | 10 | "A" | Conversão de Letra |
+| 30 | **F10** (Max) | 32 bits | 4294967295 | Limite Unsigned Int |
+
+## Instruções para Execução dos Testes
+
+1. **Testes Unitários:** Insira os valores de entrada manualmente nas opções do menu correspondentes.
+2. **Teste de Stress (Batch):** Crie um arquivo `entrada.csv` com os casos das funções F1, F2, F3 e F4 para validar o processamento em massa.
+3. **Validação de Erros:** Tente inserir caracteres proibidos em bases específicas para confirmar o funcionamento da funcionalidade **F5 (Fail-Fast)**.
 
 **Última atualização**: Maio de 2026
