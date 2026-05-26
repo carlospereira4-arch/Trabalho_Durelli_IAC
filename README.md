@@ -1,6 +1,7 @@
 # Trabalho_Durelli_IAC
 
 Trabalho em duplas da dsiciplina Introdução a Computação com o professor RAFAEL SERAPILHA DURELLI; Grupo: Carlos Henrique Pereira, Gabriel Augusto de Moura Veloso Murta;
+---
 Link do Vídeo Explicativo no Youtube: https://youtu.be/pT9GjP2k678
 ---
 
