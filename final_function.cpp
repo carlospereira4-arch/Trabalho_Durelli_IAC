@@ -156,7 +156,7 @@ double converterParaDecimalF(string valor, int base) {
     double decimal = 0;
 
     for (int i = 0; i < (int)inteira.length(); i++) {
-        int digito;
+        int digito; 
         char c = inteira[i];
         if (c >= 'A' && c <= 'F') digito = c - 'A' + 10;
         else if (c >= 'a' && c <= 'f') digito = c - 'a' + 10;
@@ -562,10 +562,67 @@ void processarBatch() {
             int baseOrigem = stringParaInt(baseOrigemStr);
             int baseDestino = stringParaInt(baseDestinoStr);
 
-            string resultado = converterEntreBases(valor, baseOrigem, baseDestino);
+            // 1. Criar cópia para validar, removendo temporariamente a vírgula ou ponto
+            string valorValidar = valor;
+            for (int i = 0; i < (int)valorValidar.length(); i++) {
+                if (valorValidar[i] == ',' || valorValidar[i] == '.') {
+                    valorValidar.erase(i, 1);
+                    i--;
+                }
+            }
 
-            if (resultado == "ERRO") {
-                cout << "Linha " << contador + 1 << ": Valor invalido" << endl;
+            // Validação robusta que inclui suporte correto à Base 10
+            bool valido = true;
+            for (int i = 0; i < (int)valorValidar.length(); i++) {
+                char c = valorValidar[i];
+                if (baseOrigem == 2 && (c != '0' && c != '1')) valido = false;
+                if (baseOrigem == 8 && (c < '0' || c > '7')) valido = false;
+                if (baseOrigem == 10 && (c < '0' || c > '9')) valido = false;
+                if (baseOrigem == 16) {
+                    if (!((c >= '0' && c <= '9') || (c >= 'A' && c <= 'F') || (c >= 'a' && c <= 'f'))) valido = false;
+                }
+            }
+
+            if (!valido || valorValidar.empty()) {
+                cout << "Linha " << contador + 1 << ": Valor invalido para a base " << baseOrigem << endl;
+                erros++; contador++; continue;
+            }
+
+            string resultado = "";
+
+            if (baseOrigem == baseDestino) {
+                resultado = valor;
+            } else {
+                bool ehFracionario = (valor.find('.') != string::npos || valor.find(',') != string::npos);
+
+                if (ehFracionario) {
+                    // Fluxo Fracionário (Usa as funções double "F")
+                    double decimalF = converterParaDecimalF(valor, baseOrigem);
+
+                    if (baseDestino == 2) resultado = converterBinarioF(decimalF);
+                    else if (baseDestino == 8) resultado = converterOctalF(decimalF);
+                    else if (baseDestino == 16) resultado = converterHexadecimalF(decimalF);
+                    else if (baseDestino == 10) {
+                        resultado = to_string(decimalF);
+                        while (resultado.back() == '0') resultado.pop_back();
+                        if (resultado.back() == '.') resultado.pop_back();
+                    }
+                } else {
+                    // CORREÇÃO: Fluxo Inteiro Puro tratando os limites da Base 10
+                    if (baseOrigem == 10) {
+                        int dec = stringParaInt(valor);
+                        resultado = converterDeDecimal(dec, baseDestino);
+                    } else if (baseDestino == 10) {
+                        int dec = converterParaDecimal(valor, baseOrigem);
+                        resultado = to_string(dec);
+                    } else {
+                        resultado = converterEntreBases(valor, baseOrigem, baseDestino);
+                    }
+                }
+            }
+
+            if (resultado == "ERRO" || resultado.empty()) {
+                cout << "Linha " << contador + 1 << ": Erro na conversao" << endl;
                 erros++;
             } else {
                 saida << valor << ";" << baseOrigem << ";" << resultado << ";" << baseDestino << endl;
@@ -577,7 +634,8 @@ void processarBatch() {
         contador++;
     }
 
-    entrada.close(); saida.close();
+    entrada.close(); 
+    saida.close();
     cout << "Processamento concluido! Total: " << contador << " | Erros: " << erros << endl;
 }
 
